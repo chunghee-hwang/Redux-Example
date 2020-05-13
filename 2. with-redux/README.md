@@ -62,7 +62,7 @@ store.subscribe(red);
 ## [redux dev tools](https://github.com/zalmoxisus/redux-devtools-extension)
 store의 내용을 시간을 이동하며 확인할 수 있는 툴<br>
 뒤로 가기, 앞으로 가기 모두 동작한다.<br>
-<img src="./redux_dev_tools' alt='redux dev tools' title='redux dev tools'>
+<img src="./redux_dev_tools' alt='redux dev tools' title='redux dev tools'"></img>
 
 ## 결론
 red, green, blue 컴포넌트는 서로에 대해 참조하고 있지 않아도,<br>
