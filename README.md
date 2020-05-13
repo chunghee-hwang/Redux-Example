@@ -26,3 +26,8 @@
 ### store 바깥에 있는 요소들
 1. render: 현재 state를 반영하는 DOM을 렌더링하는 함수이다. getState를 호출하여 state를 가져온 뒤 DOM에 반영한다.
 2. action: 비즈니스 로직과 state를 변경하는 로직이 합쳐진 코드를 말한다. dispatch를 통해 state를 변경 요청한다.
+
+### 학습 목록
+[1. 리둑스 없이 앱 작성하기](./1.%20without-redux/)<br>
+[2. 리둑스로 앱 작성하기](./2.%20with-redux/)<br>
+[3. CRUD](./3.%20CRUD/)<br>
