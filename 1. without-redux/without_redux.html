@@ -1,0 +1,36 @@
+<html>
+    <body>
+        <style>
+            .container{
+                border: 5px solid black;
+                padding: 10px;
+            }
+        </style>
+        <div id="red"></div>
+        <div id="green"></div>
+        <div id="blue"></div>
+        <script>
+            changeAllComponentsColor=(color)=>{
+                let containers = document.querySelectorAll(".container");
+                containers.forEach(container=>{
+                    container.style.backgroundColor = color;
+                })
+            }
+            createColorComponent=(color)=>
+            {
+                document.querySelector(`#${color}`).innerHTML = `
+                    <div class="container" id="component_${color}">
+                        <h1>${color}</h1>
+                        <input 
+                        type="button" 
+                        value="fire"
+                        onclick="changeAllComponentsColor('${color}')">
+                    </div>
+                `;
+            }
+            createColorComponent('red');
+            createColorComponent('green');
+            createColorComponent('blue');
+        </script>
+    </body>
+</html>
