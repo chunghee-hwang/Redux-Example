@@ -35,7 +35,7 @@ reducer = (state, action) => {
     }
     let newState;
     if(action.type === 'CHANGE_COLOR'){
-        newState = Object.assign({}, state, {color:action.color}) //state 복사(시간 여행을 할 수 있도록 복사해야함.)
+        newState = Object.assign({}, state, {color:action.color}) //state 복사(시간 여행을 할 수 있도록 복사해야함.). 서로 의존을 하면 안 된다.
     }
     return newState; // 새로운 상태 반환
 }
