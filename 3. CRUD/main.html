@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.js"></script>
+    </head>
+    <body>
+        <script>
+createComponent = (id, template)=>{
+    let component = document.querySelector(`#${id}`);
+    if(!component){
+        component = document.createElement('div');
+        component.id = id;
+        document.querySelector('body').appendChild(component);
+    }
+    component.innerHTML = template;
+    return component;
+}
+subject=()=>createComponent('subject', 
+`<header>
+    <h1>WEB</h1>
+    Hello, WEB!
+</header>`);
+TOC = () =>{
+    let state = store.getState();
+    let listTemplate = '';
+    for( let [key, value] of state.contents.entries()){
+        listTemplate += 
+        `<li>
+            <a 
+            onclick="
+                event.preventDefault();
+                let action = {type:'SELECT', id:${key}};
+                store.dispatch(action);
+            "
+            href="${key}">
+                ${value.title}
+            </a>
+        </li>`;
+    }
+    createComponent('toc', 
+    `<nav>
+        <ol>
+            ${listTemplate}
+        </ol>
+    </nav>`);
+}
+
+control = () =>createComponent('control', 
+`<ul>
+    <li><a 
+    onclick="
+        event.preventDefault();
+        store.dispatch({
+           type:'CHANGE_MODE',
+           mode:'create' 
+        })
+    "
+    href="/create"
+    >create</a></li>
+    
+    <li><input 
+    onclick="
+        store.dispatch({type:'DELETE'});
+    "
+    type="button" value="delete"></input></li>
+</ul>`);
+
+content = () => {
+    let state = store.getState();
+
+    if(state.mode === 'create'){
+        let content_form = createComponent('content-form',
+            `<article>
+                <form onsubmit="
+                    event.preventDefault();
+                    let title = event.target.title.value;
+                    let desc = event.target.desc.value;
+                    store.dispatch({type:'CREATE', title, desc})
+                ">
+                    <p>
+                        <input type="text" name="title" placeholder="title">
+                    </p>
+                    <p>
+                        <textarea name="desc" placeholder="description"></textarea>
+                    </p>
+                    <p>
+                        <input type="submit">
+                    <p>
+                </form>
+            </article>
+            `);
+
+        let content_container = document.querySelector('#content');
+        if(content_container) content_container.style.display="none";
+        content_form.style.display="inline";
+    }else if(state.mode === 'read'){
+        if(state.contents.has(state.selected_id)){
+            let {title, desc} = state.contents.get(state.selected_id)
+            let content_container = createComponent('content',
+                `<h2>${title}</h2>
+                ${desc}`);
+
+            let content_form = document.querySelector('#content-form');
+            if(content_form) content_form.style.display="none";
+            content_container.style.display="inline";
+        }
+    }else if(state.mode === 'welcome'){
+        createComponent('content',"<h2>welcome</h2>redux");
+    }
+}
+
+reducer= (state, action)=>{
+    if(!state){
+        return {
+            mode: 'welcome',
+            selected_id:1,
+            contents:
+            new Map(
+            [
+                [1, {title: 'HTML', desc: 'HTML is ...'}],
+                [2, {title:'CSS', desc: 'CSS is ...'}]
+            ])
+        };
+    }
+    let newState;
+    if(action.type === 'SELECT'){
+        newState = Object.assign({}, state, 
+        {
+            mode: 'read',
+            selected_id : action.id
+            }
+        );
+    }else if(action.type === 'CREATE'){
+        let newContents = new Map(state.contents);
+        newContents.set(newContents.size + 1, {title: action.title, desc: action.desc})
+        newState = Object.assign({}, state, {
+            contents: newContents,
+            mode: 'read'
+        });
+    }else if(action.type === 'DELETE'){
+        let newContents = new Map(state.contents);
+        if(newContents.has(state.selected_id)){
+            newContents.delete(state.selected_id);
+        }
+        newState = Object.assign({}, state, {
+            contents: newContents,
+            mode: 'welcome'
+        });
+    }else if(action.type === 'CHANGE_MODE'){
+        newState = Object.assign({}, state, {
+            mode: action.mode
+        });
+    }
+    console.log({action, state, newState})
+    return newState;
+}
+let store = Redux.createStore(reducer); // 전역 변수
+
+subject();
+TOC();
+control();
+content();
+
+store.subscribe(content);
+store.subscribe(TOC);
+        </script>
+    </body>
+</html>
