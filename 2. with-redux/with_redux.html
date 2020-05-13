@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.js"></script>
+</head>
+
+<body>
+    <style>
+        .container {
+            border: 5px solid black;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        reducer = (state, action) => {
+            console.log({ state, action })
+            if (!state) //undefined
+            {
+                // 초기 state 값 설정
+                return { color: 'yellow' }
+            }
+            let newState;
+            if (action.type === 'CHANGE_COLOR') {
+                newState = Object.assign({}, state, { color: action.color }) //state 복사(시간 여행을 할 수 있도록 복사해야함.)
+            }
+            return newState;
+        }
+        const store = Redux.createStore(
+            reducer,
+            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() // redux dev tools 실행
+        );
+
+        onClickFire = (color) => {
+            store.dispatch({ type: 'CHANGE_COLOR', color })
+        }
+
+        renderComponent = (color) => {
+            let state = store.getState();
+            let container = document.querySelector(`#${color}`)
+            if (!container) {
+                container = document.createElement("div");
+                container.id = color;
+                document.querySelector('body').appendChild(container);
+            }
+            container.innerHTML = `
+            <div class="container" id="component_${color}" style="background-color:${state.color}">
+                <h1>${color}</h1>
+                <input 
+                type="button" 
+                value="fire"
+                onclick="onClickFire('${color}')">
+            </div>
+        `;
+        }
+
+        let red = () => renderComponent('red');
+        let green = () => renderComponent('green');
+        let blue = () => renderComponent('blue');
+        store.subscribe(red);
+        store.subscribe(green);
+        store.subscribe(blue);
+        red();
+        green();
+        blue();
+    </script>
+</body>
+
+</html>
